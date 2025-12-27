@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "es2016",
+        "module": "commonjs", // Important for Node.js
+        "outDir": "./dist",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
