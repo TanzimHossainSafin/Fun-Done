@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Joke from "../models/funs.model";
+import Joke from "../models/createJokes.model";
 
 export const createFunJoke = async (req: Request, res: Response) => {
     const data = req.body;

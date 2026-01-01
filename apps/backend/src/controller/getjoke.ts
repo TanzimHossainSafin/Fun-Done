@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Joke from "../models/funs.model";
+import Joke from "../models/createJokes.model";
 export const getFunJoke = async (req: Request, res: Response) => {
     //const id = req.params.id;
     const joke = await Joke.find();

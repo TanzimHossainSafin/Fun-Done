@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { funRouter } from "./router/funRouter";
+import { funRouter } from "./router/jokeRouter";
 import getDBInstance from "./utils/db";
 dotenv.config();
 const app = express();
@@ -19,7 +19,10 @@ app.use('/app/v1/funs', funRouter);
 // mongodb connection instance
 getDBInstance();
 
-//server instance 
-app.listen(port, () => {
+//server instance connection
+const listen=() => {
+  app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+}
+listen();

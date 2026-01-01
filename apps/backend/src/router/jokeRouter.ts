@@ -1,5 +1,5 @@
 import router from "express";
-import { getFunJoke } from "../controller/getFunJoke";
+import { getFunJoke } from "../controller/getjoke";
 import { createFunJoke } from "../controller/createFunJoke";
 export const funRouter = router();
 
