@@ -1,38 +1,15 @@
 import mongoose from "mongoose";
 
 interface UserInterface extends mongoose.Document {
-    username:{
-        type: String,
-        required:boolean,
-        unique:boolean
+    username: string;
+    email: string;
+    password: string;
+    joinedServers: string[];
+    stats: {
+        jokesSubmitted: number;
+        contestsWon: number;
+        totalVotes: number;
     };
-    email:{
-        type: String,
-        required:boolean,
-        unique:boolean
-    }
-    password:{
-        type: String,
-        required:boolean
-    };
-    joinedServers:{
-        type:Array<string>,
-        default:[]
-    }
-    stats:{
-        jokesSubmitted:{
-            type:Number,
-            default:0
-        },
-        contestsWon:{
-            type:Number,
-            default:0
-        },
-        totalVotes:{
-            type:Number,
-            default:0
-        }
-    }
 }
 
 const userSchema = new mongoose.Schema({

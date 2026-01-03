@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { funRouter } from "./router/jokeRouter";
+import { userRouter } from "./router/userRouter";
 import getDBInstance from "./utils/db";
 dotenv.config();
 const app = express();
@@ -14,8 +15,7 @@ app.use(cors({
 
 //api routers 
 app.use('/app/v1/funs', funRouter);
-
-
+app.use('/app/v1/users', userRouter);
 // mongodb connection instance
 getDBInstance();
 
