@@ -1,0 +1,16 @@
+<svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="360" height="360" rx="24" fill="#F1F3F5"/>
+  <circle cx="180" cy="124" r="52" fill="#FDE2C3"/>
+  <path d="M128 116C142 94 168 80 196 80C220 80 242 90 256 106" stroke="#1F2937" stroke-width="10" stroke-linecap="round"/>
+  <path d="M140 206C140 172 165 150 180 150C195 150 220 172 220 206" fill="#3B82F6"/>
+  <path d="M110 246C110 214 138 190 180 190C222 190 250 214 250 246V280H110V246Z" fill="#1E293B"/>
+  <path d="M136 106C148 92 164 86 180 86C196 86 212 92 224 106" stroke="#0F172A" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="160" cy="124" r="6" fill="#0F172A"/>
+  <circle cx="200" cy="124" r="6" fill="#0F172A"/>
+  <path d="M166 146C174 154 186 154 194 146" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+  <rect x="86" y="286" width="188" height="20" rx="10" fill="#CBD5F5"/>
+  <rect x="230" y="286" width="44" height="20" rx="10" fill="#93C5FD"/>
+  <circle cx="274" cy="66" r="30" fill="#E0E7FF"/>
+  <circle cx="94" cy="70" r="18" fill="#E2E8F0"/>
+  <path d="M260 86C272 78 286 78 298 86" stroke="#94A3B8" stroke-width="6" stroke-linecap="round"/>
+</svg>
