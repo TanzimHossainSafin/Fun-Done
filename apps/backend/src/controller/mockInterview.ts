@@ -6,8 +6,27 @@ export const startMockInterview = async (req: Request, res: Response) => {
   try {
     const { userId, targetRole, targetCompany, industry, interviewType, difficulty } = req.body;
 
+    if (!userId || !targetRole) {
+      return res.status(400).json({ error: "userId and targetRole are required" });
+    }
+
+    console.log("Generating interview questions for:", { targetRole, targetCompany, interviewType, difficulty });
+
     // Generate interview questions using AI
-    const questions = await generateInterviewQuestions(targetRole, difficulty || "medium");
+    const questions = await generateInterviewQuestions(
+      targetRole, 
+      targetCompany, 
+      interviewType || "mixed", 
+      difficulty || "medium"
+    );
+
+    console.log("Generated questions count:", questions?.length);
+
+    if (!questions || questions.length === 0) {
+      return res.status(500).json({ 
+        error: "Failed to generate interview questions. Please check your API key and try again." 
+      });
+    }
 
     const interview = new MockInterview({
       userId,
@@ -28,9 +47,13 @@ export const startMockInterview = async (req: Request, res: Response) => {
       interviewId: interview._id,
       firstQuestion: questions[0],
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error starting mock interview:", error);
-    res.status(500).json({ error: "Failed to start mock interview" });
+    console.error("Error details:", error.message, error.stack);
+    res.status(500).json({ 
+      error: "Failed to start mock interview", 
+      details: error.message 
+    });
   }
 };
 

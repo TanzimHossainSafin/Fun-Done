@@ -33,7 +33,9 @@ export const StartInterviewForm = ({ userId, onInterviewStarted, initialRole = "
 
             onInterviewStarted(result.interviewId, result.firstQuestion);
         } catch (err: any) {
-            setError(err.response?.data?.error || "Failed to start interview");
+            console.error("Interview start error:", err);
+            console.error("Error response:", err.response?.data);
+            setError(err.response?.data?.error || err.response?.data?.details || err.message || "Failed to start interview");
         } finally {
             setLoading(false);
         }

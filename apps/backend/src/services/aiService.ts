@@ -12,7 +12,7 @@ if (!process.env.GROK_API_KEY) {
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const groq = new Groq({ apiKey: process.env.GROK_API_KEY || "" });
 
-const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash"; // Changed from gemini-2.5-flash to gemini-1.5-flash
+const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.0-flash-exp";
 const GROK_MODEL = process.env.GROK_MODEL || "openai/gpt-oss-120b";
 const AI_PROVIDER = process.env.AI_PROVIDER || "gemini"; // 'gemini' or 'grok'
 
@@ -888,22 +888,46 @@ Return ONLY valid JSON:
 export const generateInterviewQuestions = async (
     targetRole: string,
     targetCompany?: string,
-    interviewType: string = "mixed"
+    interviewType: string = "mixed",
+    difficulty: string = "medium"
 ) => {
     try {
-        const prompt = `Generate 10 realistic interview questions for:
-Role: ${targetRole}
-${targetCompany ? `Company: ${targetCompany} (Bangladesh context)` : ""}
-Interview Type: ${interviewType}
-
+        // Define question distribution based on interview type
+        let questionDistribution = "";
+        if (interviewType === "technical") {
+            questionDistribution = `
+Question distribution:
+- Technical: 80% (coding problems, system design, algorithms, data structures)
+- Problem-solving: 20% (logical thinking, analytical skills)`;
+        } else if (interviewType === "behavioral") {
+            questionDistribution = `
+Question distribution:
+- Behavioral: 80% (use STAR method framework - past experiences, teamwork, leadership)
+- Situational: 20% (hypothetical scenarios, decision-making)`;
+        } else if (interviewType === "case-study") {
+            questionDistribution = `
+Question distribution:
+- Case Study: 70% (business problems, analytical challenges, strategic thinking)
+- Problem-solving: 30% (data analysis, decision frameworks)`;
+        } else {
+            // mixed
+            questionDistribution = `
 Question distribution:
 - Behavioral: 40% (use STAR method framework)
 - Technical: 40% (role-specific)
-- Situational: 20%
+- Situational: 20%`;
+        }
+
+        const prompt = `Generate 10 realistic ${difficulty} difficulty interview questions for:
+Role: ${targetRole}
+${targetCompany ? `Company: ${targetCompany} (Bangladesh context)` : ""}
+Interview Type: ${interviewType}
+Difficulty Level: ${difficulty}
+${questionDistribution}
 
 ${targetCompany ? `Include company-specific questions based on ${targetCompany}'s culture and values.` : ""}
 
-For technical roles, include coding challenges.
+${interviewType === "technical" || interviewType === "mixed" ? "For technical questions, include coding challenges, algorithms, and system design problems." : ""}
 
 Return ONLY valid JSON array:
 [
