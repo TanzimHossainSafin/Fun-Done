@@ -18,12 +18,12 @@ const jokeSchema = new mongoose.Schema({
     serverId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CreateServer',
-        required: true
+        required: false
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: false
     },
     name: {
         type: String,
@@ -39,7 +39,12 @@ const jokeSchema = new mongoose.Schema({
     },
     punchline: {
         type: String,
-        required: true
+        required: false,
+        default: ''
+    },
+    imageUrl: {
+        type: String,
+        required: false
     },
     votes: [
         {

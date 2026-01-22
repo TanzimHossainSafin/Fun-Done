@@ -4,6 +4,7 @@ interface UserInterface extends mongoose.Document {
     username: string;
     email: string;
     password: string;
+    profileImage?: string;
     joinedServers: string[];
     stats: {
         jokesSubmitted: number;
@@ -26,6 +27,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    profileImage: {
+        type: String,
+        required: false
     },
     joinedServers: {
         type: [String],
