@@ -35,25 +35,38 @@ export const JoinStudyGroupForm = () => {
         setStatus("");
         const user = getUser();
         if (!user) {
-            setStatus("লগইন করা নেই");
+            setStatus("Not logged in");
             return;
         }
         try {
-            await joinStudyGroupByName(groupQuery, user.id);
-            setStatus("গ্রুপে যোগ হয়েছে");
-        } catch (error) {
-            setStatus("গ্রুপে যোগ করা যায়নি");
+            const result = await joinStudyGroupByName(groupQuery, user.id);
+            // Check if already a member
+            if (result.message && result.message.includes("already joined")) {
+                setStatus("You have already joined this group");
+            } else {
+                setStatus("Joined group successfully");
+                setGroupQuery(""); // Clear input on success
+            }
+        } catch (error: any) {
+            // Handle specific error cases
+            if (error.response?.status === 409) {
+                setStatus("You have already joined this group");
+            } else if (error.response?.status === 404) {
+                setStatus("Group not found");
+            } else {
+                setStatus(error.response?.data?.message || "Failed to join group");
+            }
         }
     };
 
     return (
-        <section className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900">
-                গ্রুপে যোগ দাও
+        <section className="card-3d rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm">
+            <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
+                Join Group
             </h2>
-            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-3 space-y-3">
                 <label className="block text-sm font-medium text-slate-700">
-                    গ্রুপ সার্চ (নাম লিখুন)
+                    Group Search (enter name)
                     <input
                         className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         value={groupQuery}
@@ -63,7 +76,7 @@ export const JoinStudyGroupForm = () => {
                     />
                 </label>
                 {groupOptions.length > 0 && (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-2 sm:p-3 text-sm text-slate-600">
                         {groupOptions.map((group) => (
                             <button
                                 key={group._id}
@@ -80,10 +93,18 @@ export const JoinStudyGroupForm = () => {
                     className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
                     type="submit"
                 >
-                    জয়েন করো
+                    Join
                 </button>
                 {status ? (
-                    <p className="text-sm text-emerald-600">{status}</p>
+                    <p className={`text-sm ${
+                        status.includes("already joined") || status.includes("not found")
+                            ? "text-amber-600"
+                            : status.includes("successfully")
+                            ? "text-emerald-600"
+                            : "text-red-600"
+                    }`}>
+                        {status}
+                    </p>
                 ) : null}
             </form>
         </section>

@@ -16,7 +16,7 @@ export const StudyProfileForm = () => {
         setStatus("");
         const user = getUser();
         if (!user) {
-            setStatus("লগইন করা নেই");
+            setStatus("Not logged in");
             return;
         }
 
@@ -28,23 +28,23 @@ export const StudyProfileForm = () => {
                 goals: parseCommaList(goals),
                 learningStyle: learningStyle || undefined,
             });
-            setStatus("প্রোফাইল সেভ হয়েছে");
+            setStatus("Profile saved successfully");
         } catch (error) {
-            setStatus("প্রোফাইল সেভ করা যায়নি");
+            setStatus("Failed to save profile");
         }
     };
 
     return (
         <section className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-slate-900">
-                স্টাডি প্রোফাইল
+                Study Profile
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-                আপনার স্টাডি পছন্দ ও লক্ষ্য যোগ করুন।
+                Add your study preferences and goals.
             </p>
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
                 <label className="block text-sm font-medium text-slate-700">
-                    Subjects (কমা দিয়ে আলাদা)
+                    Subjects (comma separated)
                     <input
                         className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         value={subjects}
@@ -54,7 +54,7 @@ export const StudyProfileForm = () => {
                     />
                 </label>
                 <label className="block text-sm font-medium text-slate-700">
-                    Study times (কমা দিয়ে আলাদা)
+                    Study times (comma separated)
                     <input
                         className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         value={studyTimes}
@@ -63,7 +63,7 @@ export const StudyProfileForm = () => {
                     />
                 </label>
                 <label className="block text-sm font-medium text-slate-700">
-                    Goals (কমা দিয়ে আলাদা)
+                    Goals (comma separated)
                     <input
                         className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         value={goals}
@@ -93,7 +93,7 @@ export const StudyProfileForm = () => {
                     className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
                     type="submit"
                 >
-                    সেভ প্রোফাইল
+                    Save Profile
                 </button>
                 {status ? (
                     <p className="text-sm text-emerald-600">{status}</p>

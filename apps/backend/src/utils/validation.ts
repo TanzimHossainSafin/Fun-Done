@@ -7,7 +7,8 @@ export const registerSchema=z.object({
     email:z.string()
      .email({ message: "Invalid email format" }),
     password:z.string()
-     .min(6,"Minimum length of pasword is at least 6 lenght")
+     .min(6,"Minimum length of pasword is at least 6 lenght"),
+    profileImage:z.string().optional()
 });
 
 export const studyProfileSchema = z.object({

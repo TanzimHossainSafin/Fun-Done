@@ -49,7 +49,7 @@ export const createStudyGroup = async (req: Request, res: Response) => {
         subject,
         description,
         createdBy: createdByObjectId,
-        aiModeratorName: aiModeratorName || "Bondhon AI Moderator",
+        aiModeratorName: aiModeratorName || "Udyomix AI Moderator",
         meetingSuggestions,
         members: memberObjectIds.map((memberId) => {
             const role: "admin" | "member" = memberId.equals(
@@ -89,7 +89,7 @@ export const joinStudyGroup = async (req: Request, res: Response) => {
         (member) => member.userId.toString() === userId
     );
     if (alreadyMember) {
-        return res.status(200).json({ message: "Already in group", group });
+        return res.status(409).json({ message: "You have already joined this group", group });
     }
 
     group.members.push({
@@ -100,7 +100,7 @@ export const joinStudyGroup = async (req: Request, res: Response) => {
 
     await group.save();
 
-    return res.status(201).json({ message: "Joined the group", group });
+    return res.status(201).json({ message: "Joined the group successfully", group });
 };
 
 export const joinStudyGroupByName = async (req: Request, res: Response) => {
@@ -121,7 +121,7 @@ export const joinStudyGroupByName = async (req: Request, res: Response) => {
         (member) => member.userId.toString() === userId
     );
     if (alreadyMember) {
-        return res.status(200).json({ message: "Already in group", group });
+        return res.status(409).json({ message: "You have already joined this group", group });
     }
 
     group.members.push({
@@ -131,7 +131,7 @@ export const joinStudyGroupByName = async (req: Request, res: Response) => {
     });
 
     await group.save();
-    return res.status(201).json({ message: "Joined the group", group });
+    return res.status(201).json({ message: "Joined the group successfully", group });
 };
 
 export const getStudyGroup = async (req: Request, res: Response) => {

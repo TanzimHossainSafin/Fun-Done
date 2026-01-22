@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "../../../utils/axios";
 import type {
     StudyProfilePayload,
     MatchResult,
@@ -6,20 +6,20 @@ import type {
     StudySession,
 } from "../types";
 
-const BASE_URL = "http://localhost:3000/app/v1/study";
+const BASE_URL = "/app/v1/study";
 
 export const saveStudyProfile = async (payload: StudyProfilePayload) => {
-    const result = await axios.post(`${BASE_URL}/profile`, payload);
+    const result = await apiClient.post(`${BASE_URL}/profile`, payload);
     return result.data;
 };
 
 export const fetchStudyProfile = async (userId: string) => {
-    const result = await axios.get(`${BASE_URL}/profile/${userId}`);
+    const result = await apiClient.get(`${BASE_URL}/profile/${userId}`);
     return result.data;
 };
 
 export const fetchMatches = async (userId: string, limit = 5) => {
-    const result = await axios.get(`${BASE_URL}/match/${userId}`, {
+    const result = await apiClient.get(`${BASE_URL}/match/${userId}`, {
         params: { limit },
     });
     return result.data as {
@@ -36,19 +36,19 @@ export const createStudyGroup = async (payload: {
     memberIds?: string[];
     aiModeratorName?: string;
 }) => {
-    const result = await axios.post(`${BASE_URL}/groups`, payload);
+    const result = await apiClient.post(`${BASE_URL}/groups`, payload);
     return result.data as { group: StudyGroup };
 };
 
 export const fetchStudyGroups = async (userId?: string) => {
-    const result = await axios.get(`${BASE_URL}/groups`, {
+    const result = await apiClient.get(`${BASE_URL}/groups`, {
         params: userId ? { userId } : {},
     });
     return result.data as { groups: StudyGroup[] };
 };
 
 export const joinStudyGroup = async (groupId: string, userId: string) => {
-    const result = await axios.post(`${BASE_URL}/groups/${groupId}/join`, {
+    const result = await apiClient.post(`${BASE_URL}/groups/${groupId}/join`, {
         userId,
     });
     return result.data as { group: StudyGroup };
@@ -58,15 +58,15 @@ export const joinStudyGroupByName = async (
     groupName: string,
     userId: string
 ) => {
-    const result = await axios.post(`${BASE_URL}/groups/join-by-name`, {
+    const result = await apiClient.post(`${BASE_URL}/groups/join-by-name`, {
         groupName,
         userId,
     });
-    return result.data as { group: StudyGroup };
+    return result.data as { group: StudyGroup; message: string };
 };
 
 export const searchGroups = async (query: string) => {
-    const result = await axios.get(`${BASE_URL}/groups/search`, {
+    const result = await apiClient.get(`${BASE_URL}/groups/search`, {
         params: { query },
     });
     return result.data as { groups: StudyGroup[] };
@@ -81,7 +81,7 @@ export const createStudySession = async (
         createdBy: string;
     }
 ) => {
-    const result = await axios.post(
+    const result = await apiClient.post(
         `${BASE_URL}/groups/${groupId}/sessions`,
         payload
     );
@@ -89,7 +89,7 @@ export const createStudySession = async (
 };
 
 export const fetchStudySessions = async (groupId: string) => {
-    const result = await axios.get(
+    const result = await apiClient.get(
         `${BASE_URL}/groups/${groupId}/sessions`
     );
     return result.data as { sessions: StudySession[] };

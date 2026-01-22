@@ -57,7 +57,7 @@ export const AIChatBox = ({ groupId, groupName, onMessagesChange }: AIChatBoxPro
 
         const user = getUser();
         if (!user) {
-            setError("লগইন করা নেই");
+            setError("Not logged in");
             return;
         }
 

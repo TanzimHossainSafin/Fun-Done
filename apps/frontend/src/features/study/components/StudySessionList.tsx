@@ -29,19 +29,19 @@ export const StudySessionList = () => {
         try {
             const result = await fetchStudySessions(groupId);
             setSessions(result.sessions);
-            setStatus("সেশন লোড হয়েছে");
+            setStatus("Sessions loaded successfully");
         } catch (error) {
-            setStatus("সেশন লোড করা যায়নি");
+            setStatus("Failed to load sessions");
         }
     };
 
     return (
         <section className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-slate-900">
-                স্টাডি সেশন তালিকা
+                Study Session List
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-                গ্রুপের সব সেশন দেখুন
+                View all sessions for the group
             </p>
             <div className="mt-4 flex flex-wrap items-end gap-3">
                 <label className="block text-sm font-medium text-slate-700">
@@ -65,7 +65,7 @@ export const StudySessionList = () => {
                     onClick={handleFetch}
                     disabled={!groupId}
                 >
-                    সেশন দেখাও
+                    Show Sessions
                 </button>
                 {status ? (
                     <p className="text-sm text-emerald-600">{status}</p>
@@ -73,7 +73,7 @@ export const StudySessionList = () => {
             </div>
             <div className="mt-5 space-y-3">
                 {sessions.length === 0 ? (
-                    <p className="text-sm text-slate-400">কোনো সেশন নেই</p>
+                    <p className="text-sm text-slate-400">No sessions yet</p>
                 ) : (
                     sessions.map((session) => (
                         <article

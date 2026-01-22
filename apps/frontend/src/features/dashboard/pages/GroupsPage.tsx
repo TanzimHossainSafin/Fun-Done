@@ -6,14 +6,20 @@ import { DashboardLayout } from "../components/DashboardLayout";
 export const GroupsPage = () => {
     return (
         <DashboardLayout
-            title="স্টাডি গ্রুপ ম্যানেজমেন্ট"
-            description="নতুন গ্রুপ তৈরি করুন, তালিকা দেখুন বা জয়েন করুন।"
+            title="Study Group Management"
+            description="Create new groups, view lists, or join existing groups."
         >
-            <div className="grid gap-6 lg:grid-cols-2">
-                <StudyGroupForm />
-                <StudyGroupList />
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
+                <div className="lg:col-span-1">
+                    <StudyGroupForm />
+                </div>
+                <div className="lg:col-span-1">
+                    <StudyGroupList />
+                </div>
             </div>
-            <JoinStudyGroupForm />
+            <div className="mt-4 sm:mt-6 max-w-md mx-auto lg:mx-0">
+                <JoinStudyGroupForm />
+            </div>
         </DashboardLayout>
     );
 };

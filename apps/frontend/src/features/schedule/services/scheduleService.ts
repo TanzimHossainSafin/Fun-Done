@@ -35,6 +35,18 @@ export const addScheduleEvent = async (payload: {
     return result.data as { schedule: Schedule };
 };
 
+export const deleteScheduleEvent = async (payload: {
+    userId: string;
+    title: string;
+    start: string;
+    end: string;
+    type?: "class" | "study" | "exam" | "personal";
+    priority?: number;
+}) => {
+    const result = await axios.delete(`${BASE_URL}/schedule/event`, { data: payload });
+    return result.data as { schedule: Schedule };
+};
+
 export const optimizeSchedule = async (payload: {
     userId: string;
     preferredStudyBlocks: Array<{
@@ -61,5 +73,41 @@ export const suggestHabits = async (payload: {
 }) => {
     const result = await axios.post(`${BASE_URL}/schedule/habits`, payload);
     return result.data as { suggestions: HabitSuggestions };
+};
+
+// Habit Tracker APIs
+export const getHabits = async (userId: string) => {
+    const result = await axios.get(`${BASE_URL}/habits/${userId}`);
+    return result.data as { habits: HabitData[] };
+};
+
+export const createHabit = async (payload: {
+    userId: string;
+    name: string;
+    frequency: "daily" | "weekly";
+    total?: number;
+}) => {
+    const result = await axios.post(`${BASE_URL}/habits`, payload);
+    return result.data as { habit: HabitData };
+};
+
+export const updateHabit = async (id: string, payload: {
+    completed?: number;
+    name?: string;
+    frequency?: "daily" | "weekly";
+    total?: number;
+}) => {
+    const result = await axios.put(`${BASE_URL}/habits/${id}`, payload);
+    return result.data as { habit: HabitData };
+};
+
+export const incrementHabit = async (id: string) => {
+    const result = await axios.post(`${BASE_URL}/habits/${id}/increment`);
+    return result.data as { habit: HabitData };
+};
+
+export const deleteHabit = async (id: string) => {
+    const result = await axios.delete(`${BASE_URL}/habits/${id}`);
+    return result.data;
 };
 

@@ -35,7 +35,11 @@ export const FetchAllJokes = ({ refreshKey }: FetchAllJokesProps) => {
     useEffect(() => {
         const user = getUser();
         if (user) {
+            console.log("Current user:", user);
+            console.log("Current userId:", user.id);
             setCurrentUserId(user.id);
+        } else {
+            console.log("No user found");
         }
     }, []);
 
@@ -46,7 +50,7 @@ export const FetchAllJokes = ({ refreshKey }: FetchAllJokesProps) => {
             const data = await getJokes();
             setJokes(Array.isArray(data) ? data : []);
         } catch (err) {
-            setError("ফিড লোড করা যাচ্ছে না।");
+            setError("Failed to load feed.");
         } finally {
             setIsLoading(false);
         }
@@ -81,25 +85,37 @@ export const FetchAllJokes = ({ refreshKey }: FetchAllJokesProps) => {
     };
 
     const handleDelete = async (id: string) => {
-        await deleteJoke(id, currentUserId || undefined);
-        setJokes((prev) => prev.filter((item) => item._id !== id));
+        try {
+            console.log("Attempting to delete joke:", id);
+            console.log("With userId:", currentUserId);
+            await deleteJoke(id, currentUserId || undefined);
+            setJokes((prev) => prev.filter((item) => item._id !== id));
+            setError(null); // Clear any previous errors
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || "Failed to delete.";
+            setError(errorMessage);
+            console.error("Delete error:", err);
+            console.error("Error response:", err.response?.data);
+            // Clear error after 5 seconds
+            setTimeout(() => setError(null), 5000);
+        }
     };
 
     return (
         <div className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h3 className="text-base font-semibold text-slate-800">Community Feed</h3>
             <p className="mt-1 text-sm text-slate-500">
-                সাম্প্রতিক জোকস ও মিমস দেখুন।
+                View recent jokes and memes.
             </p>
             {isLoading && (
-                <p className="mt-4 text-sm text-slate-500">লোড হচ্ছে...</p>
+                <p className="mt-4 text-sm text-slate-500">Loading...</p>
             )}
             {error && (
                 <p className="mt-4 text-sm text-rose-600">{error}</p>
             )}
             <div className="mt-4 grid gap-4">
                 {!isLoading && jokes.length === 0 && (
-                    <p className="text-sm text-slate-500">এখনও কোন পোস্ট নেই।</p>
+                    <p className="text-sm text-slate-500">No posts yet.</p>
                 )}
                 {jokes.map((joke) => (
                     <div
@@ -169,22 +185,42 @@ export const FetchAllJokes = ({ refreshKey }: FetchAllJokesProps) => {
                                         </p>
                                         <p className="text-xs text-slate-500">{joke.category}</p>
                                     </div>
-                                    {currentUserId && joke.userId && currentUserId === joke.userId && (
-                                        <div className="flex gap-2">
-                                            <Button
-                                                text="Edit"
-                                                color="secondary"
-                                                size="sm"
-                                                onClick={() => handleEditStart(joke)}
-                                            />
-                                            <Button
-                                                text="Delete"
-                                                color="danger"
-                                                size="sm"
-                                                onClick={() => handleDelete(joke._id)}
-                                            />
-                                        </div>
-                                    )}
+                                    {(() => {
+                                        const currentUserIdStr = currentUserId ? String(currentUserId) : null;
+                                        const jokeUserIdStr = joke.userId ? String(joke.userId) : null;
+                                        const canEdit = currentUserIdStr && jokeUserIdStr && currentUserIdStr === jokeUserIdStr;
+                                        
+                                        if (canEdit) {
+                                            console.log("Showing edit/delete buttons for joke:", joke._id);
+                                            console.log("Current userId:", currentUserIdStr);
+                                            console.log("Joke userId:", jokeUserIdStr);
+                                        } else {
+                                            console.log("Cannot edit joke:", joke._id);
+                                            console.log("Current userId:", currentUserIdStr);
+                                            console.log("Joke userId:", jokeUserIdStr);
+                                        }
+                                        
+                                        return canEdit ? (
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    text="Edit"
+                                                    color="secondary"
+                                                    size="sm"
+                                                    onClick={() => handleEditStart(joke)}
+                                                />
+                                                <Button
+                                                    text="Delete"
+                                                    color="danger"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        console.log("Delete clicked for joke:", joke._id);
+                                                        console.log("Sending userId:", currentUserIdStr);
+                                                        handleDelete(joke._id);
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : null;
+                                    })()}
                                 </div>
 
                                 {/* Post Content */}

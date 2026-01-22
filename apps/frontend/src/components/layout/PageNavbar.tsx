@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import udyomixLogo from "../../assets/udyomix-logo.svg";
 
 export default function PageNavbar() {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem("bondhon_token");
-        localStorage.removeItem("bondhon_user");
+    const handleLogout = async () => {
+        const { clearToken } = await import("../../features/auth/utils/authStorage");
+        await clearToken();
         navigate("/login");
     };
 
@@ -17,10 +18,11 @@ export default function PageNavbar() {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <Link to="/dashboard" className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">FD</span>
-                        </div>
-                        <span className="text-xl font-bold text-gray-900">Fun-Done</span>
+                        <img 
+                            src={udyomixLogo} 
+                            alt="Udyomix Logo" 
+                            className="h-10 w-auto"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}

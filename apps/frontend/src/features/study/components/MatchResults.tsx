@@ -13,26 +13,26 @@ export const MatchResults = () => {
         setStatus("");
         const user = getUser();
         if (!user) {
-            setStatus("লগইন করা নেই");
+            setStatus("Not logged in");
             return;
         }
         try {
             const result = await fetchMatches(user.id, limit);
             setMatches(result.matches);
             setMeetingSuggestions(result.meetingSuggestions);
-            setStatus("ম্যাচ পাওয়া গেছে");
+            setStatus("Matches found");
         } catch (error) {
-            setStatus("ম্যাচ পাওয়া যায়নি");
+            setStatus("Failed to find matches");
         }
     };
 
     return (
         <section className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-slate-900">
-                স্টাডি ম্যাচ
+                Study Match
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-                সেরা স্টাডি পার্টনারদের লিস্ট।
+                List of best study partners.
             </p>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <label className="block text-sm font-medium text-slate-700">
@@ -56,7 +56,7 @@ export const MatchResults = () => {
                     onClick={handleFetch}
                     disabled={false}
                 >
-                    ম্যাচ বের করো
+                    Find Matches
                 </button>
                 {status ? (
                     <p className="text-sm text-emerald-600">{status}</p>
@@ -65,11 +65,11 @@ export const MatchResults = () => {
             <div className="mt-6 space-y-3">
                 {meetingSuggestions.length > 0 && (
                     <p className="text-sm text-slate-600">
-                        সাজেস্টেড সময়: {meetingSuggestions.join(", ")}
+                        Suggested times: {meetingSuggestions.join(", ")}
                     </p>
                 )}
                 {matches.length === 0 ? (
-                    <p className="text-sm text-slate-400">ম্যাচ এখনো নেই</p>
+                    <p className="text-sm text-slate-400">No matches yet</p>
                 ) : (
                     matches.map((match) => (
                         <article

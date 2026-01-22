@@ -37,7 +37,7 @@ export const StudyGroupForm = () => {
         setStatus("");
         const user = getUser();
         if (!user) {
-            setStatus("লগইন করা নেই");
+            setStatus("Not logged in");
             return;
         }
         try {
@@ -48,24 +48,24 @@ export const StudyGroupForm = () => {
                 createdBy: user.id,
                 memberIds: selectedMembers.map((member) => member.id),
             });
-            setStatus("গ্রুপ তৈরি হয়েছে");
+            setStatus("Group created successfully");
             setName("");
             setSubject("");
             setDescription("");
             setSelectedMembers([]);
             setMemberQuery("");
         } catch (error) {
-            setStatus("গ্রুপ তৈরি করা যায়নি");
+            setStatus("Failed to create group");
         }
     };
 
     return (
-        <section className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900">
-                স্টাডি গ্রুপ তৈরি
+        <section className="card-3d rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm h-full">
+            <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
+                Create Study Group
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-                নতুন গ্রুপ তৈরি করে মেম্বার যোগ করুন।
+                Create a new group and add members.
             </p>
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
                 <label className="block text-sm font-medium text-slate-700">
@@ -99,12 +99,12 @@ export const StudyGroupForm = () => {
                     />
                 </label>
                 <label className="block text-sm font-medium text-slate-700">
-                    মেম্বার সার্চ (username)
+                    Member Search (username)
                     <input
                         className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         value={memberQuery}
                         onChange={(event) => setMemberQuery(event.target.value)}
-                        placeholder="username লিখুন"
+                        placeholder="Enter username"
                     />
                 </label>
                 {memberOptions.length > 0 && (
@@ -149,7 +149,7 @@ export const StudyGroupForm = () => {
                     className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
                     type="submit"
                 >
-                    গ্রুপ তৈরি
+                    Create Group
                 </button>
                 {status ? (
                     <p className="text-sm text-emerald-600">{status}</p>

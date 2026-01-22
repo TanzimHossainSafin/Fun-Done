@@ -32,6 +32,7 @@ export interface ScheduleAnalysis {
 }
 
 export interface HabitData {
+    _id?: string;
     name: string;
     frequency: "daily" | "weekly";
     completed: number;

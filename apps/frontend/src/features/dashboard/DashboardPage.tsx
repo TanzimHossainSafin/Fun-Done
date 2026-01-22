@@ -4,8 +4,8 @@ import { DashboardLayout } from "./components/DashboardLayout";
 export const DashboardPage = () => {
     return (
         <DashboardLayout
-            title="আপনার স্টাডি ও গ্রুপ ম্যানেজমেন্ট"
-            description="ড্যাশবোর্ড থেকে পছন্দের সেকশনে ঢুকে সব ম্যানেজ করুন।"
+            title="Your Study & Group Management"
+            description="Manage everything by entering your preferred section from the dashboard."
         >
             <section className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -14,7 +14,7 @@ export const DashboardPage = () => {
                             Refreshment Zone
                         </h2>
                         <p className="text-sm text-slate-500">
-                            মজা করার জন্য জোকস/মিমস শেয়ার করুন।
+                            Share jokes/memes to have some fun.
                         </p>
                     </div>
                     <Link
@@ -29,33 +29,33 @@ export const DashboardPage = () => {
             <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {[
                     {
-                        title: "স্টাডি প্রোফাইল",
-                        description: "প্রোফাইল সেট করুন ও ম্যাচিং নিন।",
+                        title: "Study Profile",
+                        description: "Set up your profile and get matched.",
                         to: "/dashboard/study",
                     },
                     {
-                        title: "স্টাডি ম্যাচ",
-                        description: "পার্টনার ম্যাচিং ও সাজেস্টেড সময়।",
+                        title: "Study Match",
+                        description: "Partner matching and suggested times.",
                         to: "/dashboard/study",
                     },
                     {
-                        title: "গ্রুপ তৈরি",
-                        description: "নতুন গ্রুপ তৈরি ও মেম্বার যোগ।",
+                        title: "Create Group",
+                        description: "Create new groups and add members.",
                         to: "/dashboard/groups",
                     },
                     {
-                        title: "গ্রুপ তালিকা",
-                        description: "আপনার গ্রুপগুলো দেখুন।",
+                        title: "Group List",
+                        description: "View your groups.",
                         to: "/dashboard/groups",
                     },
                     {
-                        title: "সেশন লগ",
-                        description: "স্টাডি সেশন যোগ ও সময় ট্র্যাকিং।",
+                        title: "Session Log",
+                        description: "Add study sessions and track time.",
                         to: "/dashboard/sessions",
                     },
                     {
-                        title: "সেশন তালিকা",
-                        description: "পূর্বের সেশনগুলো দেখুন।",
+                        title: "Session List",
+                        description: "View previous sessions.",
                         to: "/dashboard/sessions",
                     },
                 ].map((card) => (
@@ -76,7 +76,7 @@ export const DashboardPage = () => {
                             {card.description}
                         </p>
                         <p className="mt-4 text-xs font-semibold text-blue-600 group-hover:text-blue-700">
-                            বিস্তারিত দেখুন →
+                            View Details →
                         </p>
                     </Link>
                 ))}

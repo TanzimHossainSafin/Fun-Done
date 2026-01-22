@@ -13,7 +13,7 @@ const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const groq = new Groq({ apiKey: process.env.GROK_API_KEY || "" });
 
 const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.0-flash-exp";
-const GROK_MODEL = process.env.GROK_MODEL || "openai/gpt-oss-120b";
+const GROK_MODEL = process.env.GROK_MODEL || "llama-3.3-70b-versatile";
 const AI_PROVIDER = process.env.AI_PROVIDER || "gemini"; // 'gemini' or 'grok'
 
 // Rate limiting helper
@@ -883,6 +883,40 @@ Return ONLY valid JSON:
 // ==================== FEATURE 6: MOCK INTERVIEW AI ====================
 
 /**
+ * Normalize questionType to valid enum values
+ */
+const normalizeQuestionType = (questionType: string): string => {
+    const validTypes = ["behavioral", "technical", "situational", "case-study", "coding"];
+    
+    // If already valid, return as is
+    if (validTypes.includes(questionType)) {
+        return questionType;
+    }
+    
+    // Map invalid values to valid ones
+    const lowerType = questionType.toLowerCase();
+    
+    if (lowerType.includes("behavioral") || lowerType.includes("star")) {
+        return "behavioral";
+    }
+    if (lowerType.includes("coding") || lowerType.includes("programming") || lowerType.includes("algorithm")) {
+        return "coding";
+    }
+    if (lowerType.includes("case-study") || lowerType.includes("case study")) {
+        return "case-study";
+    }
+    if (lowerType.includes("situational") || lowerType.includes("hypothetical")) {
+        return "situational";
+    }
+    if (lowerType.includes("technical") || lowerType.includes("system-design") || lowerType.includes("conceptual") || lowerType.includes("problem-solving")) {
+        return "technical";
+    }
+    
+    // Default fallback
+    return "technical";
+};
+
+/**
  * Generate interview questions for specific role and company
  */
 export const generateInterviewQuestions = async (
@@ -929,6 +963,15 @@ ${targetCompany ? `Include company-specific questions based on ${targetCompany}'
 
 ${interviewType === "technical" || interviewType === "mixed" ? "For technical questions, include coding challenges, algorithms, and system design problems." : ""}
 
+IMPORTANT: The questionType field MUST be one of these exact values only:
+- "behavioral" (for behavioral/STAR method questions)
+- "technical" (for technical/conceptual questions)
+- "situational" (for hypothetical scenario questions)
+- "case-study" (for case study questions)
+- "coding" (for coding/programming questions)
+
+Do NOT use values like "technical-coding", "technical-system-design", "problem-solving", etc. Use only the 5 values listed above.
+
 Return ONLY valid JSON array:
 [
     {
@@ -946,20 +989,60 @@ Return ONLY valid JSON array:
     }
 ]`;
 
-        return await retryWithBackoff(async () => {
-            const model = ai.getGenerativeModel({ model: MODEL_NAME });
-            const result = await model.generateContent(prompt);
-            const response = result.response;
+        // Try Gemini first
+        try {
+            console.log("Attempting to generate questions with Gemini...");
+            const result = await retryWithBackoff(async () => {
+                const model = ai.getGenerativeModel({ model: MODEL_NAME });
+                const result = await model.generateContent(prompt);
+                const response = result.response;
 
-            const text = response.text().trim();
-            const jsonMatch = text.match(/\[[\s\S]*\]/);
-            if (jsonMatch) {
-                return JSON.parse(jsonMatch[0]);
+                const text = response.text().trim();
+                const jsonMatch = text.match(/\[[\s\S]*\]/);
+                if (jsonMatch) {
+                    const questions = JSON.parse(jsonMatch[0]);
+                    // Normalize questionType values
+                    return questions.map((q: any) => ({
+                        ...q,
+                        questionType: normalizeQuestionType(q.questionType || "technical")
+                    }));
+                }
+                throw new Error("Failed to parse questions from Gemini");
+            });
+            console.log("Successfully generated questions with Gemini");
+            return result;
+        } catch (geminiError: any) {
+            console.error("Gemini failed, trying Groq...", geminiError.message);
+            
+            // Fallback to Groq
+            try {
+                const completion = await groq.chat.completions.create({
+                    model: GROK_MODEL,
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0.7,
+                });
+
+                const text = completion.choices[0]?.message?.content?.trim() || "";
+                const jsonMatch = text.match(/\[[\s\S]*\]/);
+                if (jsonMatch) {
+                    const questions = JSON.parse(jsonMatch[0]);
+                    // Normalize questionType values
+                    const normalizedQuestions = questions.map((q: any) => ({
+                        ...q,
+                        questionType: normalizeQuestionType(q.questionType || "technical")
+                    }));
+                    console.log("Successfully generated questions with Groq");
+                    return normalizedQuestions;
+                }
+                throw new Error("Failed to parse questions from Groq");
+            } catch (groqError: any) {
+                console.error("Groq also failed:", groqError.message);
+                throw new Error("Both AI providers failed to generate questions");
             }
-            throw new Error("Failed to parse questions");
-        });
-    } catch (error) {
+        }
+    } catch (error: any) {
         console.error("Interview Questions Generation Error:", error);
+        console.error("Error details:", error.message);
         return [];
     }
 };

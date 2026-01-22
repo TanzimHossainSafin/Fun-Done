@@ -13,7 +13,7 @@ export const RefreshmentPage = () => {
     return (
         <DashboardLayout
             title="Refreshment Zone"
-            description="জোকস ও মিমস শেয়ার করে একটু রিফ্রেশ হন।"
+            description="Share jokes and memes to refresh yourself."
         >
             <div className="grid gap-6 lg:grid-cols-2">
                 <SubmitJokes onCreated={handleCreated} />

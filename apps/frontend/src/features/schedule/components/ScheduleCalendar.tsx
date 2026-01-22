@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addScheduleEvent } from "../services/scheduleService";
+import { addScheduleEvent, deleteScheduleEvent } from "../services/scheduleService";
 import type { Schedule, ScheduleEvent } from "../types";
 
 interface Props {
@@ -18,6 +18,31 @@ export default function ScheduleCalendar({ schedule, userId, onScheduleUpdate }:
         priority: 3,
     });
     const [submitting, setSubmitting] = useState(false);
+    const [deletingEventId, setDeletingEventId] = useState<number | null>(null);
+
+    const handleDeleteEvent = async (event: ScheduleEvent, index: number) => {
+        if (!window.confirm(`Are you sure you want to delete "${event.title}"?`)) {
+            return;
+        }
+
+        try {
+            setDeletingEventId(index);
+            await deleteScheduleEvent({
+                userId,
+                title: event.title,
+                start: getEventDateString(event.start),
+                end: getEventDateString(event.end),
+                type: event.type,
+                priority: event.priority,
+            });
+            onScheduleUpdate();
+        } catch (error) {
+            console.error("Failed to delete event:", error);
+            alert("Failed to delete event");
+        } finally {
+            setDeletingEventId(null);
+        }
+    };
 
     const handleAddEvent = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -68,21 +93,26 @@ export default function ScheduleCalendar({ schedule, userId, onScheduleUpdate }:
         return colors[type] || colors.other;
     };
 
-    const formatTime = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleTimeString("en-US", { 
+    const formatTime = (date: string | Date) => {
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        return dateObj.toLocaleTimeString("en-US", { 
             hour: "2-digit", 
             minute: "2-digit" 
         });
     };
 
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString("en-US", { 
+    const formatDate = (date: string | Date) => {
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        return dateObj.toLocaleDateString("en-US", { 
             month: "short", 
             day: "numeric",
             weekday: "short"
         });
+    };
+
+    const getEventDateString = (date: string | Date): string => {
+        if (typeof date === 'string') return date;
+        return date.toISOString();
     };
 
     return (
@@ -225,6 +255,14 @@ export default function ScheduleCalendar({ schedule, userId, onScheduleUpdate }:
                                             </span>
                                         </div>
                                     </div>
+                                    <button
+                                        onClick={() => handleDeleteEvent(event, index)}
+                                        disabled={deletingEventId === index}
+                                        className="ml-4 px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                        title="Delete event"
+                                    >
+                                        {deletingEventId === index ? "Deleting..." : "Delete"}
+                                    </button>
                                 </div>
                             </div>
                         ))

@@ -162,6 +162,59 @@ export const analyzeSchedule = async (req: Request, res: Response) => {
     }
 };
 
+export const deleteScheduleEvent = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.body;
+        const { title, start, end, type, priority } = req.body;
+
+        if (!userId || !title || !start || !end) {
+            return res.status(400).json({
+                message: "userId, title, start, and end are required",
+            });
+        }
+
+        const userObjectId = new mongoose.Types.ObjectId(userId);
+        const eventStart = new Date(start);
+        const eventEnd = new Date(end);
+
+        // Find and remove the matching event
+        const schedule = await Schedule.findOne({ userId: userObjectId });
+        
+        if (!schedule) {
+            return res.status(404).json({ message: "Schedule not found" });
+        }
+
+        // Remove the event that matches all provided fields
+        const updatedSchedule = await Schedule.findOneAndUpdate(
+            { userId: userObjectId },
+            {
+                $pull: {
+                    events: {
+                        title,
+                        start: eventStart,
+                        end: eventEnd,
+                        ...(type && { type }),
+                        ...(priority !== undefined && { priority }),
+                    },
+                },
+            },
+            { new: true }
+        );
+
+        if (!updatedSchedule) {
+            return res.status(404).json({ message: "Schedule not found" });
+        }
+
+        return res.status(200).json({ message: "Event deleted", schedule: updatedSchedule });
+    } catch (error) {
+        console.error("Delete event error:", error);
+        return res.status(400).json({
+            message: "Failed to delete event",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+};
+
 export const suggestHabits = async (req: Request, res: Response) => {
     try {
         const { currentHabits, studyGoals } = req.body;

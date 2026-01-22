@@ -57,7 +57,7 @@ const studyGroupSchema = new mongoose.Schema(
         },
         aiModeratorName: {
             type: String,
-            default: "Bondhon AI Moderator",
+            default: "Udyomix AI Moderator",
         },
     },
     {

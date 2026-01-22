@@ -31,7 +31,7 @@ export const StudySessionForm = () => {
         setStatus("");
         const user = getUser();
         if (!user) {
-            setStatus("লগইন করা নেই");
+            setStatus("Not logged in");
             return;
         }
         try {
@@ -45,29 +45,29 @@ export const StudySessionForm = () => {
                 endedAt: endedAtISO,
                 createdBy: user.id,
             });
-            setStatus("সেশন লগ হয়েছে ✅");
+            setStatus("Session logged successfully ✅");
             // Reset form
             setTopic("");
             setStartedAt("");
             setEndedAt("");
         } catch (error) {
-            setStatus("সেশন লগ করা যায়নি ❌");
+            setStatus("Failed to log session ❌");
         }
     };
 
     return (
         <section className="card-3d rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-slate-900">
-                স্টাডি সেশন লগ
+                Study Session Log
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-                আপনার গ্রুপের জন্য স্টাডি সেশন রেকর্ড করুন
+                Record study sessions for your group
             </p>
             
             {groups.length === 0 && (
                 <div className="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-3">
                     <p className="text-sm text-amber-800">
-                        📌 প্রথমে <strong>Groups</strong> পেজে গিয়ে একটি স্টাডি গ্রুপ তৈরি করুন
+                        📌 First, go to the <strong>Groups</strong> page and create a study group
                     </p>
                 </div>
             )}
@@ -123,7 +123,7 @@ export const StudySessionForm = () => {
                     className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
                     type="submit"
                 >
-                    সেশন সেভ
+                    Save Session
                 </button>
                 {status ? (
                     <p className="text-sm text-emerald-600">{status}</p>
