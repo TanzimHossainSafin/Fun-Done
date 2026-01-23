@@ -21,7 +21,7 @@ export const updateFunJoke = async (req: Request, res: Response) => {
         if (image && image.startsWith('data:')) {
             try {
                 const uploadResult = await cloudinary.uploader.upload(image, {
-                    folder: 'fun-done/jokes',
+                    folder: 'udyomix/jokes',
                     resource_type: 'auto'
                 });
                 updateData.imageUrl = uploadResult.secure_url;
